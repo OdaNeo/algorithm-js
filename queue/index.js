@@ -1,4 +1,4 @@
-const queue=[]
+const queue = []
 
 queue.push(1)
 
