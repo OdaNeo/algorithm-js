@@ -16,11 +16,11 @@
 // a.next = b
 // b.next = c
 
-var a = 10
-var obj = {
-    a: 20,
-    say: function () {
-        console.log(this.a)
-    }
-}
-obj.say() // 10
+// var a = 10
+// var obj = {
+//     a: 20,
+//     say: () => {
+//         console.log(this.a)
+//     }
+// }
+// obj.say() // 10
