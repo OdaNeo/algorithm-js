@@ -59,14 +59,14 @@
 
 // var bindFoo = bar.bind2(foo, "daisy");
 // bindFoo("18");
-// function Otaku(name, age) {
-//   this.name = name;
-//   this.age = age;
-// }
-// Otaku.prototype.stes = "60";
-// Otaku.prototype.getName = function () {
-//   console.log(this.name);
-// };
+function Otaku(name, age) {
+  this.name = name;
+  this.age = age;
+}
+Otaku.prototype.stes = "60";
+Otaku.prototype.getName = function () {
+  console.log(this.name);
+};
 
 // // var person = new Otaku("1312", "2");
 // // person.getName();
@@ -123,24 +123,89 @@
 // child1.getName()
 // console.log(Child.prototype.constructor)
 
+// function Parent() {
+//   this.name = [123, "231"];
+// }
+// function Child() {
+//   Parent.call(this);
+// }
+// const Fn = function () {};
+// Fn.prototype = new Parent();
+// Child.prototype = new Fn();
+// Child.prototype.constructor=Child
+// function createFunc() {
+//   const obj = new Object();
+//   const [constructor, ...rest] = arguments;
+//   obj.__proto__ = constructor.prototype;
+//   constructor.apply(obj, rest);
+//   return obj;
+// }
+// const person = createFunc(Otaku, "123", "13523");
+// person.getName();
 
-function Parent(){
-  this.names=['1231','safd']
+class Promise2 {
+  constructor(executor) {
+    this.status = "pending";
+    this.value = undefined;
+    this.reason = undefined;
+    this.resolveCb = [];
+    this.rejectCb = [];
+    let resolve = (value) => {
+      if (this.status === "pending") {
+        this.status = "fulfilled";
+        this.value = value;
+        this.resolveCb.forEach(
+          setTimeout((fn) => {
+            fn();
+          }, 0)
+        );
+      }
+    };
+    let reject = (reason) => {
+      if (this.status === "pending") {
+        this.status = "rejected";
+        this.reason = reason;
+        this.rejectCb.forEach(
+          setTimeout((fn) => {
+            fn();
+          }, 0)
+        );
+      }
+    };
+    executor(resolve, reject);
+  }
+  then(onFulfilled, onReject) {
+    if (this.status === "fulfilled") {
+      onFulfilled(this.value);
+    }
+    if (this.status === "rejected") {
+      onReject(this.reason);
+    }
+    if (this.status === "pending") {
+      this.resolveCb.push(() => {
+        onFulfilled(this.value);
+      });
+      this.rejectCb.push(() => {
+        onReject(this.reason);
+      });
+    }
+  }
 }
 
-Parent.prototype.getName = function () {
-  console.log(this.names);
-};
-
-function Child(){
-  Parent.call(this)
+function createFunc(constructor, ...args) {
+  const obj = new Object();
+  obj.__proto__ = constructor.prototype;
+  constructor.apply(obj, args);
+  return obj;
 }
-// Child.prototype=new Parent()
 
-const F=function(){}
-F.prototype=Parent.prototype
-Child.prototype=new F()
-Child.prototype.constructor=Child
-
-var child1 = new Child();
-console.log(Child.__proto__===Function.prototype)
+function Person() {
+  this.name = [12, 12321, "123"];
+}
+function Child() {
+  Person.call(this);
+}
+const Fn = () => {};
+Fn.prototype = new Person();
+Child.prototype = new Fn();
+Child.prototype.constructor = Child;
